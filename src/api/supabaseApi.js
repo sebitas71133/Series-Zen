@@ -4,14 +4,11 @@ import { supabase } from "../../services/supabaseClient";
 export const getEpisodes = async (slug, season_number) => {
   try {
     // Primero, obtenemos el 'series_id' de la serie
-    console.log({ slug, season_number });
 
     const { data: serieId, error: seriesError } = await supabase
       .from("SERIES")
       .select("id")
       .eq("slug", slug); // Filtra por el título de la serie
-
-    console.log(serieId[0].id);
 
     if (seriesError) throw seriesError;
 

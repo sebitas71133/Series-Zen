@@ -20,6 +20,7 @@ import {
   selectEpisode,
   selectSeason,
 } from "../store/slices/seriesSlice";
+import VideoPlayerFull from "./VideoPlayerFull";
 
 const Episodes = (props) => {
   const { episodes, seasons, selectedEpisode, selectedSeason, selectedSerie } =
@@ -27,13 +28,11 @@ const Episodes = (props) => {
 
   const dispatch = useDispatch();
   const { slug } = props;
-  console.log(slug);
 
   const handleSeasonChange = (event) => {
     const seasonId = event.target.value;
 
     const seasonSelected = seasons.find((season) => season.id === seasonId);
-    console.log(seasonSelected);
 
     dispatch(selectSeason(seasonSelected));
     dispatch(
@@ -42,18 +41,15 @@ const Episodes = (props) => {
         selectedSeason: seasonSelected.season_number,
       })
     );
-    console.log(selectedSeason);
   };
 
   const handleEpisodeClick = (episode) => {
-    console.log(episode);
-
     dispatch(selectEpisode(episode));
   };
 
-  const handleCloseVideo = () => {
-    dispatch(selectEpisode(null));
-  };
+  // const handleCloseVideo = () => {
+  //   dispatch(selectEpisode(null));
+  // };
 
   useEffect(() => {
     dispatch(fetchEpisodesBySeason({ slug, selectedSeason }));
@@ -147,12 +143,22 @@ const Episodes = (props) => {
         ))}
       </Grid2>
       {selectedEpisode && (
-        <VideoPlayer
+        // <VideoPlayer
+        //   open={!!selectedEpisode}
+        //   onClose={handleCloseVideo}
+        //   videoUrl={selectedEpisode.video_url}
+        //   title={`${selectedEpisode.episode_number} - ${selectedEpisode.title}`}
+        // />
+
+        <VideoPlayerFull
           open={!!selectedEpisode}
-          onClose={handleCloseVideo}
+          // onClose={handleCloseVideo}
           videoUrl={selectedEpisode.video_url}
           title={`${selectedEpisode.episode_number} - ${selectedEpisode.title}`}
-        />
+          description={selectedEpisode.description}
+          thumbnail_image={selectedEpisode.thumbnail_image}
+          selectedSeasonNumber={selectedSeason.season_number}
+        ></VideoPlayerFull>
       )}
     </Box>
   );

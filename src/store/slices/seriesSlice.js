@@ -5,7 +5,6 @@ import { getEpisodes, getTemporadasBySerie } from "../../api/supabaseApi";
 export const fetchEpisodesBySeason = createAsyncThunk(
   "seasons/fetchEpisodes",
   async ({ slug, selectedSeason }, { rejectWithValue }) => {
-    console.log("Payload:", slug, selectedSeason); // Esto se debería mostrar ahora
     try {
       const { episodes, serie } = await getEpisodes(slug, selectedSeason); // Llamada a la API
 
@@ -68,8 +67,6 @@ const seriesSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchEpisodesBySeason.fulfilled, (state, action) => {
-        console.log(action.payload);
-
         state.loading = false;
         state.episodes = action.payload.episodes;
         state.selectedSerie = action.payload.serie;
