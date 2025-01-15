@@ -1,0 +1,140 @@
+{
+  "series": [
+    {
+      "id": 1,
+      "title": "Serie Animada 1",
+      "description": "Una emocionante serie animada llena de aventuras.",
+      "thumbnail": "https://via.placeholder.com/150",
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "episodes": [
+            {
+              "id": 1,
+              "title": "Episodio 1",
+              "description": "Introducción a los personajes y el mundo.",
+              "videoUrl": "https://example.com/video1.mp4",
+              "thumbnail": "https://via.placeholder.com/150"
+            },
+            {
+              "id": 2,
+              "title": "Episodio 2",
+              "description": "La primera aventura de los héroes.",
+              "videoUrl": "https://example.com/video2.mp4",
+              "thumbnail": "https://via.placeholder.com/150"
+            }
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "episodes": [
+            {
+              "id": 1,
+              "title": "Episodio 1",
+              "description": "Un nuevo desafío para los héroes.",
+              "videoUrl": "https://example.com/video3.mp4",
+              "thumbnail": "https://via.placeholder.com/150"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Samurai jack",
+      "description": "Una historia épica del gran samurai Jack.",
+      "thumbnail": "https://via.placeholder.com/150",
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "episodes": [
+            {
+              "id": 1,
+              "number": "1. I",
+              "title": "Aku reinicia su reino del terror y el hijo del Emperador se entrena. Se convierte...",
+              "image": "https://res.cloudinary.com/ditbq608f/image/upload/v1736565290/IMAGENES/SERIES/SAMURAI-JACK/temporada1/cap01_j7hxwn.avif",
+              "videoUrl": "https://drive.google.com/file/d/1OPAro0CctNhpgRyWm515VZtlkk23ovfZ/preview"
+            },
+
+            {
+              "id": 2,
+              "number": "2. II",
+              "title": "El samurái aterriza en el futuro y le dan el nombre de Jack. Una raza de perros...",
+              "image": "https://res.cloudinary.com/ditbq608f/image/upload/v1736566952/IMAGENES/SERIES/SAMURAI-JACK/temporada1/cap02_nlptvo.avif",
+              "videoUrl": ""
+            },
+
+            {
+              "id": 3,
+              "number": "3. III",
+              "title": "Jack se provee de armas y vence al ejército de escarabajos-robot de Aku, logrando...",
+              "image": "https://res.cloudinary.com/ditbq608f/image/upload/v1736567883/IMAGENES/SERIES/SAMURAI-JACK/temporada1/cap3_f1btk4.avif",
+              "videoUrl": "https://example.com/episode3.mp4"
+            },
+            {
+              "id": 4,
+              "number": "4. IV",
+              "title": "Jack ayuda a liberar a los Woolies de los tiránicos Chritchellites",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode4.mp4"
+            },
+            {
+              "id": 5,
+              "number": "5. V",
+              "title": "Jack se enfrenta a tres arqueros ciegos ultraletales",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode5.mp4"
+            },
+            {
+              "id": 6,
+              "number": "6. VI",
+              "title": "Jack y un grupo de científicos intentan destruir una de las torres de Aku",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode6.mp4"
+            },
+            {
+              "id": 7,
+              "number": "7. VII",
+              "title": "Jack ayuda a unos monjes pacifistas a defender su monasterio de los robots de Aku",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode7.mp4"
+            },
+            {
+              "id": 8,
+              "number": "8. VIII",
+              "title": "Jack se enfrenta a un cazarrecompensas robótico que puede copiar sus movimientos",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode8.mp4"
+            }
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "episodes": [
+            {
+              "id": 9,
+              "number": "9. VIII",
+              "title": "Jack se enfrenta a un cazarrecompensas robótico que puede copiar sus movimientos",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode8.mp4"
+            },
+            {
+              "id": 10,
+              "number": "10. VIII",
+              "title": "Jack se enfrenta a un cazarrecompensas robótico que puede copiar sus movimientos",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode8.mp4"
+            },
+            {
+              "id": 11,
+              "number": "11. VIII",
+              "title": "Jack se enfrenta a un cazarrecompensas robótico que puede copiar sus movimientos",
+              "image": "/placeholder.svg",
+              "videoUrl": "https://example.com/episode8.mp4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
