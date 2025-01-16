@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,65 +8,67 @@ import {
   CardContent,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllSeries } from "../store/slices/seriesSlice";
 
-const seriesData = {
-  accion: [
-    {
-      id: "samurai-jack",
-      title: "Samurai Jack",
-      image:
-        "https://res.cloudinary.com/ditbq608f/image/upload/v1736803927/IMAGENES/SERIES/Series_Samurai_Jack_q7ax9j.jpg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "last-of-us",
-      title: "The Last of Us (HBO)",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "succession",
-      title: "Succession (HBO)",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "euphoria",
-      title: "Euphoria (HBO)",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-  ],
-  comedia: [
-    {
-      id: "friends",
-      title: "Friends",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "big-bang-theory",
-      title: "The Big Bang Theory",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "rick-morty",
-      title: "Rick and Morty",
-      image: "/placeholder.svg",
-      path: "/series/samurai-jack",
-    },
-    {
-      id: "samurai-jack",
-      title: "Samurai Jack",
-      image:
-        "https://res.cloudinary.com/ditbq608f/image/upload/v1736803927/IMAGENES/SERIES/Series_Samurai_Jack_q7ax9j.jpg",
-      path: "/series/samurai-jack",
-    },
-  ],
-};
+// const seriesData = {
+//   accion: [
+//     {
+//       id: "samurai-jack",
+//       title: "Samurai Jack",
+//       image:
+//         "https://res.cloudinary.com/ditbq608f/image/upload/v1736803927/IMAGENES/SERIES/Series_Samurai_Jack_q7ax9j.jpg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "last-of-us",
+//       title: "The Last of Us (HBO)",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "succession",
+//       title: "Succession (HBO)",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "euphoria",
+//       title: "Euphoria (HBO)",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//   ],
+//   comedia: [
+//     {
+//       id: "friends",
+//       title: "Friends",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "big-bang-theory",
+//       title: "The Big Bang Theory",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "rick-morty",
+//       title: "Rick and Morty",
+//       image: "/placeholder.svg",
+//       path: "/series/samurai-jack",
+//     },
+//     {
+//       id: "samurai-jack",
+//       title: "Samurai Jack",
+//       image:
+//         "https://res.cloudinary.com/ditbq608f/image/upload/v1736803927/IMAGENES/SERIES/Series_Samurai_Jack_q7ax9j.jpg",
+//       path: "/series/samurai-jack",
+//     },
+//   ],
+// };
 
-const SeriesSection = ({ title, series, onSeriesClick }) => {
+const SeriesSection = ({ title, series = [], onSeriesClick }) => {
   return (
     <Box sx={{ mb: 6 }}>
       <Typography
@@ -97,12 +99,12 @@ const SeriesSection = ({ title, series, onSeriesClick }) => {
                   transition: "transform 0.3s ease-in-out",
                 },
               }}
-              onClick={() => onSeriesClick(show.path)}
+              onClick={() => onSeriesClick(show.slug)}
             >
               <CardMedia
                 component="img"
                 height="200"
-                image={show.image}
+                image={show.cover_image}
                 alt={show.title}
                 sx={{ borderRadius: 1, textAlign: "center" }}
               />
@@ -119,12 +121,19 @@ const SeriesSection = ({ title, series, onSeriesClick }) => {
   );
 };
 
-const SeriesCatalog = () => {
+const CatalogPage = () => {
   const navigate = useNavigate();
 
   const handleSeriesClick = (path) => {
-    navigate(path);
+    navigate(`/series/${path}`);
   };
+
+  const dispatch = useDispatch();
+  const { series } = useSelector((state) => state.series);
+
+  useEffect(() => {
+    dispatch(fetchAllSeries({ all: true }));
+  }, [dispatch]);
 
   return (
     <Box
@@ -137,16 +146,11 @@ const SeriesCatalog = () => {
     >
       <SeriesSection
         title="Accion"
-        series={seriesData.accion}
-        onSeriesClick={handleSeriesClick}
-      />
-      <SeriesSection
-        title="Comedia"
-        series={seriesData.comedia}
+        series={series}
         onSeriesClick={handleSeriesClick}
       />
     </Box>
   );
 };
 
-export default SeriesCatalog;
+export default CatalogPage;

@@ -69,7 +69,7 @@ const Navbar = () => {
               textDecoration: "none",
               cursor: "pointer",
             }}
-            onClick={() => handleNavigate("/series")}
+            onClick={() => handleNavigate("/home")}
           >
             LOGO
           </Typography>

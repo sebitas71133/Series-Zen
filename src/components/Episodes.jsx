@@ -19,26 +19,34 @@ import {
   fetchTemporadasBySerie,
   selectEpisode,
   selectSeason,
+  setSelectedNumberSeason,
 } from "../store/slices/seriesSlice";
 import VideoPlayerFull from "./VideoPlayerFull";
 
 const Episodes = (props) => {
-  const { episodes, seasons, selectedEpisode, selectedSeason, selectedSerie } =
-    useSelector((state) => state.series);
+  const {
+    episodes,
+    seasons,
+    selectedEpisode,
+    selectedSeason,
+    selectedNumberSeason,
+    selectedSerie,
+  } = useSelector((state) => state.series);
 
   const dispatch = useDispatch();
   const { slug } = props;
 
   const handleSeasonChange = (event) => {
-    const seasonId = event.target.value;
+    const seasonNumber = event.target.value;
+    //dispatch(setSelectedNumberSeason(seasonNumber));
+    const seasonSelected = seasons.find(
+      (season) => season.season_number === seasonNumber
+    );
 
-    const seasonSelected = seasons.find((season) => season.id === seasonId);
-
-    dispatch(selectSeason(seasonSelected));
     dispatch(
       fetchEpisodesBySeason({
         slug,
-        selectedSeason: seasonSelected.season_number,
+        selectedNumberSeason: seasonNumber,
       })
     );
   };
@@ -47,13 +55,9 @@ const Episodes = (props) => {
     dispatch(selectEpisode(episode));
   };
 
-  // const handleCloseVideo = () => {
-  //   dispatch(selectEpisode(null));
-  // };
-
+  //UseEffect que se realiza solo 1 vez al iniciar el componente
   useEffect(() => {
-    dispatch(fetchEpisodesBySeason({ slug, selectedSeason }));
-    dispatch(fetchTemporadasBySerie({ serieId: selectedSerie.id }));
+    dispatch(fetchEpisodesBySeason({ slug, selectedNumberSeason: 1 }));
   }, []);
 
   return (
@@ -75,7 +79,7 @@ const Episodes = (props) => {
           <FormControl sx={{ minWidth: 200, mt: 2 }}>
             <InputLabel>Temporada</InputLabel>
             <Select
-              value={selectedSeason.season_number || ""}
+              value={selectedSeason?.season_number || ""}
               label="Temporada"
               onChange={handleSeasonChange}
             >
@@ -89,15 +93,15 @@ const Episodes = (props) => {
         </Box>
         <Box sx={{ textAlign: "center", m: 4, p: { md: 2, xs: 0 } }}>
           <Typography variant="h6" component="h6" color="text.primary">
-            {selectedSeason.description}
+            {selectedSeason?.description}
           </Typography>
         </Box>
         <Box>
           {selectedSeason?.poster_image && (
             <CardMedia
               component="img"
-              image={selectedSeason.poster_image}
-              alt={`Póster de la temporada ${selectedSeason.season_number}`}
+              image={selectedSeason?.poster_image}
+              alt={`Póster de la temporada ${selectedSeason?.season_number}`}
               sx={{ maxWidth: 200, borderRadius: 2 }}
             />
           )}

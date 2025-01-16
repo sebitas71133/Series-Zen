@@ -6,6 +6,7 @@ import SeriesPage from "../pages/SeriesPage";
 import CatalogPage from "../pages/CatalogPage";
 import ErrorBoundary from "../components/ErrorBoundary";
 import NotFoundPage from "../components/NotFoundPage";
+import HomePage from "../pages/HomePage";
 
 const routes = [
   {
@@ -19,7 +20,8 @@ const routes = [
       </>
     ),
     children: [
-      { index: true, element: <CatalogPage></CatalogPage> },
+      { index: true, element: <HomePage></HomePage> },
+      { path: "home", element: <HomePage></HomePage> },
       { path: "series", element: <CatalogPage></CatalogPage> },
       { path: "series/:slug", element: <SeriesPage></SeriesPage> },
       // { path: "/", element: <CatalogPage></CatalogPage> },

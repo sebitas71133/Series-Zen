@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, Button, Chip, Stack } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 
 const Hero = () => {
+  const dispatch = useDispatch();
+  const { selectedSerie } = useSelector((state) => state.series);
+
+  // useEffect(() => {
+  //   console.log("serie seleccionado");
+
+  //   console.log(selectedSerie);
+  // }, [selectedSerie]);
+
   return (
     <Box
       sx={{
         position: "relative",
         minHeight: "80vh",
-        backgroundImage:
-          "url('https://res.cloudinary.com/ditbq608f/image/upload/v1736804023/IMAGENES/SERIES/Samuria-banner_iomi3u.avif')",
+        backgroundImage: `url(${selectedSerie.banner_image})`,
+
         backgroundSize: "cover",
         backgroundPosition: "center",
         display: "flex",
@@ -43,15 +53,13 @@ const Hero = () => {
             <Chip label="2002" variant="outlined" />
             <Chip label="5 TEMPORADAS" variant="outlined" />
             <Chip label="ANIMACIÓN PARA ADULTOS" variant="outlined" />
-            <Chip label="ACCIÓN" variant="outlined" />
+            <Chip label={selectedSerie.genre} variant="outlined" />
           </Stack>
           <Typography variant="h1" component="h1">
-            Samurai Jack
+            {selectedSerie.title}
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            Cuando una fuerza maligna destruye la Tierra, un joven guerrero
-            samurái viaja al futuro. Los nativos lo ayudan a volver al pasado
-            para prevenirlo.
+            {selectedSerie.description}
           </Typography>
           <Button
             variant="contained"

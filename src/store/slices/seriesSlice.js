@@ -1,14 +1,21 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import React from "react";
-import { getEpisodes, getTemporadasBySerie } from "../../api/supabaseApi";
+import {
+  getEpisodes,
+  getSeries,
+  getTemporadasBySerie,
+} from "../../api/supabaseApi";
 
 export const fetchEpisodesBySeason = createAsyncThunk(
   "seasons/fetchEpisodes",
-  async ({ slug, selectedSeason }, { rejectWithValue }) => {
+  async ({ slug, selectedNumberSeason }, { rejectWithValue }) => {
     try {
-      const { episodes, serie } = await getEpisodes(slug, selectedSeason); // Llamada a la API
+      const { episodes, serie, season, seasons } = await getEpisodes(
+        slug,
+        selectedNumberSeason
+      ); // Llamada a la API
 
-      return { episodes, serie }; // Devuelve los episodios como resultado
+      return { episodes, serie, seasons, season }; // Devuelve los episodios como resultado
     } catch (error) {
       return rejectWithValue(error.message); // Maneja errores
     }
@@ -27,13 +34,27 @@ export const fetchTemporadasBySerie = createAsyncThunk(
   }
 );
 
+export const fetchAllSeries = createAsyncThunk(
+  "series/fetchAllSeries",
+  async ({ all }, { rejectWithValue }) => {
+    try {
+      const { series } = await getSeries();
+
+      return { series };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const seriesSlice = createSlice({
   name: "series",
   initialState: {
     series: [],
     selectedSerie: { id: 1 },
     seasons: [],
-    selectedSeason: 1,
+    selectedSeason: {},
+    selectedNumberSeason: 0,
     episodes: [],
     selectedEpisode: null,
     loading: false,
@@ -52,12 +73,17 @@ const seriesSlice = createSlice({
     },
     selectSeason: (state, action) => {
       state.selectedSeason = action.payload;
+
+      state.selectedNumberSeason = action.payload.season_number;
     },
     setEpisodes: (state, action) => {
       state.episodes = action.payload;
     },
     selectEpisode: (state, action) => {
       state.selectedEpisode = action.payload;
+    },
+    setSelectedNumberSeason: (state, action) => {
+      state.selectedNumberSeason = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -70,6 +96,8 @@ const seriesSlice = createSlice({
         state.loading = false;
         state.episodes = action.payload.episodes;
         state.selectedSerie = action.payload.serie;
+        state.selectedSeason = action.payload.season;
+        state.seasons = action.payload.seasons;
       })
       .addCase(fetchEpisodesBySeason.rejected, (state, action) => {
         state.loading = false;
@@ -87,6 +115,19 @@ const seriesSlice = createSlice({
       .addCase(fetchTemporadasBySerie.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Maneja el error
+      })
+      .addCase(fetchAllSeries.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllSeries.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.series = action.payload.series; // Actualiza las temporadas
+      })
+      .addCase(fetchAllSeries.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Maneja el error
       });
   },
 });
@@ -99,4 +140,5 @@ export const {
   setEpisodes,
   setSeasons,
   setSeries,
+  setSelectedNumberSeason,
 } = seriesSlice.actions;

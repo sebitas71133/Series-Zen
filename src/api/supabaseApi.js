@@ -3,42 +3,77 @@ import { supabase } from "../../services/supabaseClient";
 // Funciones para interactuar con la API
 export const getEpisodes = async (slug, season_number) => {
   try {
-    // Primero, obtenemos el 'series_id' de la serie
-
-    const { data: serieId, error: seriesError } = await supabase
+    // Obtener la serie por su slug
+    const { data: serie, error: seriesError } = await supabase
       .from("SERIES")
-      .select("id")
-      .eq("slug", slug); // Filtra por el título de la serie
+      .select("*")
+      .eq("slug", slug);
 
-    if (seriesError) throw seriesError;
+    if (seriesError)
+      throw new Error(`Error al obtener la serie: ${seriesError.message}`);
+    if (!serie || serie.length === 0)
+      throw new Error("No se encontró la serie con el slug proporcionado.");
 
-    // Ahora, con el 'series_id', obtenemos la temporada
-    const { data: seasonId, error: seasonsError } = await supabase
+    const serieId = serie[0].id;
+
+    // Obtener la temporada correspondiente
+    // const { data: seasons, error: seasonsError } = await supabase
+    //   .from("SEASON")
+    //   .select("*")
+    //   .eq("series_id", serieId)
+    //   .eq("season_number", season_number);
+
+    const { data: seasons, error: seasonsError } = await supabase
       .from("SEASON")
-      .select("id")
-      .eq("series_id", serieId[0].id) // Filtra por el 'series_id' de la serie
-      .eq("season_number", season_number);
+      .select("*")
+      .eq("series_id", serieId)
+      .order("season_number", { ascending: true });
 
-    if (seasonsError) throw seasonsError;
+    if (seasonsError)
+      throw new Error(
+        `Error al obtener todas las temporadas: ${seasonsError.message}`
+      );
 
-    // Finalmente, obtenemos los episodios para esa temporada y serie
-    const { data: episodesData, error: episodesError } = await supabase
+    // Si no hay temporadas, devolvemos solo la serie
+    if (!seasons || seasons.length === 0) {
+      console.warn("No se encontró la temporada solicitada.");
+      return {
+        serie: serie[0],
+        season: null,
+        episodes: [],
+        seasons: [],
+      };
+    }
+    //Por defecto 1ra temporada
+    // const seasonId = seasons[0].id;
+
+    // Obtener los episodios de la temporada
+    const { data: episodes, error: episodesError } = await supabase
       .from("EPISODES")
       .select("*")
-      .eq("season_id", seasonId[0].id) // Filtra por 'season_id'
-      .order("episode_number", { ascending: true }); // Ordena por número de episodio
+      .eq("season_id", seasons[season_number - 1].id)
+      .order("episode_number", { ascending: true });
 
-    if (episodesError) throw episodesError;
+    if (episodesError)
+      throw new Error(
+        `Error al obtener los episodios: ${episodesError.message}`
+      );
 
-    //return episodesData;
+    // Retornar la serie, la temporada y los episodios
     return {
-      serie: { id: serieId[0].id, slug },
-      season: { id: seasonId[0].id, season_number },
-      episodes: episodesData,
+      serie: serie[0],
+      season: seasons[season_number - 1],
+      episodes: episodes || [],
+      seasons: seasons,
     };
   } catch (error) {
     console.error("Error fetching episodes:", error.message);
-    return null; // Retorna null en caso de error
+    return {
+      serie: null,
+      season: null,
+      episodes: [],
+      error: error.message, // Devuelve el mensaje de error para manejarlo mejor
+    };
   }
 };
 
@@ -80,6 +115,21 @@ export const getTemporadasBySerie = async (serieId) => {
     return { seasons: seasonsData };
   } catch (error) {
     console.error("Error fetching temporadas by serieId:", error.message);
+    return null;
+  }
+};
+
+export const getSeries = async () => {
+  try {
+    const { data: seriesData, error } = await supabase
+      .from("SERIES")
+      .select("*");
+
+    if (error) throw error;
+
+    return { series: seriesData };
+  } catch (error) {
+    console.error("Error fetching series ");
     return null;
   }
 };
