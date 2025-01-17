@@ -11,15 +11,13 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
-import VideoPlayer from "./VideoPlayer";
+//import VideoPlayer from "./VideoPlayer";
 
 import {
-  fetchEpisodesBySeason,
-  fetchTemporadasBySerie,
+  fetchLoadSeriesData,
   selectEpisode,
-  selectSeason,
-  setSelectedNumberSeason,
 } from "../store/slices/seriesSlice";
 import VideoPlayerFull from "./VideoPlayerFull";
 
@@ -31,6 +29,7 @@ const Episodes = (props) => {
     selectedSeason,
     selectedNumberSeason,
     selectedSerie,
+    loading,
   } = useSelector((state) => state.series);
 
   const dispatch = useDispatch();
@@ -43,8 +42,10 @@ const Episodes = (props) => {
       (season) => season.season_number === seasonNumber
     );
 
+    console.log(seasonSelected);
+
     dispatch(
-      fetchEpisodesBySeason({
+      fetchLoadSeriesData({
         slug,
         selectedNumberSeason: seasonNumber,
       })
@@ -57,7 +58,7 @@ const Episodes = (props) => {
 
   //UseEffect que se realiza solo 1 vez al iniciar el componente
   useEffect(() => {
-    dispatch(fetchEpisodesBySeason({ slug, selectedNumberSeason: 1 }));
+    dispatch(fetchLoadSeriesData({ slug, selectedNumberSeason: 1 }));
   }, []);
 
   return (
@@ -82,12 +83,19 @@ const Episodes = (props) => {
               value={selectedSeason?.season_number || ""}
               label="Temporada"
               onChange={handleSeasonChange}
+              disabled={loading}
             >
-              {seasons.map((season) => (
-                <MenuItem key={season.id} value={season.season_number}>
-                  TEMPORADA {season.season_number}
+              {loading ? (
+                <MenuItem disabled>
+                  <CircularProgress size={24} />
                 </MenuItem>
-              ))}
+              ) : (
+                seasons.map((season) => (
+                  <MenuItem key={season.id} value={season.season_number}>
+                    TEMPORADA {season.season_number}
+                  </MenuItem>
+                ))
+              )}
             </Select>
           </FormControl>
         </Box>
@@ -112,39 +120,53 @@ const Episodes = (props) => {
       <br />
       <br />
       <Grid2 container spacing={2}>
-        {episodes.map((episode) => (
-          <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={episode.id}>
-            <Card
-              sx={{
-                bgcolor: "background.paper",
-                cursor: "pointer",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  transition: "transform 0.3s ease-in-out",
-                },
-              }}
-              onClick={() => handleEpisodeClick(episode)}
-            >
-              <CardMedia
-                component="img"
-                height="160"
-                image={episode.thumbnail_image}
-                alt={episode.title}
-              />
-              <CardContent>
-                <Typography variant="subtitle1" component="div" gutterBottom>
-                  {episode.episode_number}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {episode.title}
-                </Typography>
-                <Typography variant="body2" color="text.primary" mt={2}>
-                  {episode.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid2>
-        ))}
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <CircularProgress size={50} />
+          </Box>
+        ) : (
+          episodes.map((episode) => (
+            <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={episode.id}>
+              <Card
+                sx={{
+                  bgcolor: "background.paper",
+                  cursor: "pointer",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    transition: "transform 0.3s ease-in-out",
+                  },
+                }}
+                onClick={() => handleEpisodeClick(episode)}
+              >
+                <CardMedia
+                  component="img"
+                  height="160"
+                  image={episode.thumbnail_image}
+                  alt={episode.title}
+                />
+                <CardContent>
+                  <Typography variant="subtitle1" component="div" gutterBottom>
+                    {episode.episode_number}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {episode.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.primary" mt={2}>
+                    {episode.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid2>
+          ))
+        )}
       </Grid2>
       {selectedEpisode && (
         // <VideoPlayer

@@ -6,6 +6,7 @@ import {
   Card,
   CardMedia,
   CardContent,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -129,7 +130,7 @@ const CatalogPage = () => {
   };
 
   const dispatch = useDispatch();
-  const { series } = useSelector((state) => state.series);
+  const { series, loading } = useSelector((state) => state.series);
 
   useEffect(() => {
     dispatch(fetchAllSeries({ all: true }));
@@ -144,11 +145,25 @@ const CatalogPage = () => {
         px: 4,
       }}
     >
-      <SeriesSection
-        title="Accion"
-        series={series}
-        onSeriesClick={handleSeriesClick}
-      />
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <CircularProgress size={50} />
+        </Box>
+      ) : (
+        <SeriesSection
+          title="Accion"
+          series={series}
+          onSeriesClick={handleSeriesClick}
+        />
+      )}
     </Box>
   );
 };

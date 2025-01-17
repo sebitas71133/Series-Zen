@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Hero = () => {
   const dispatch = useDispatch();
-  const { selectedSerie } = useSelector((state) => state.series);
+  const { selectedSerie, seasons, categories } = useSelector(
+    (state) => state.series
+  );
+
+  console.log(categories);
 
   // useEffect(() => {
   //   console.log("serie seleccionado");
@@ -50,14 +54,39 @@ const Hero = () => {
               },
             }}
           >
-            <Chip label="2002" variant="outlined" />
-            <Chip label="5 TEMPORADAS" variant="outlined" />
-            <Chip label="ANIMACIÓN PARA ADULTOS" variant="outlined" />
-            <Chip label={selectedSerie.genre} variant="outlined" />
+            <Chip label={selectedSerie.release_year || 2000} variant="filled" />
+            <Chip
+              label={`TEMPORADAS ${seasons.length || 1}`}
+              variant="filled"
+            />
+
+            {categories.map((category) => (
+              <Chip
+                key={category.id}
+                label={category.name}
+                variant="outlined"
+              />
+            ))}
+            {/* <Chip label={selectedSerie.genre} variant="outlined" /> */}
           </Stack>
           <Typography variant="h1" component="h1">
             {selectedSerie.title}
           </Typography>
+
+          <Box
+            sx={{
+              backgroundColor: "rgba(255, 223, 0, 0.6)",
+              color: "white",
+              fontWeight: "bold",
+              padding: "8px 16px",
+              borderRadius: "8px",
+              display: "inline-block",
+              alignSelf: "flex-start",
+            }}
+          >
+            ⭐ {selectedSerie.rating || "N/A"}
+            <span style={{ fontSize: "0.8em" }}>/10</span>
+          </Box>
           <Typography variant="body1" sx={{ mb: 2 }}>
             {selectedSerie.description}
           </Typography>

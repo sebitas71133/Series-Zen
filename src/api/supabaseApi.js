@@ -1,7 +1,7 @@
 import { supabase } from "../../services/supabaseClient";
 
 // Funciones para interactuar con la API
-export const getEpisodes = async (slug, season_number) => {
+export const loadSeriesData = async (slug, season_number) => {
   try {
     // Obtener la serie por su slug
     const { data: serie, error: seriesError } = await supabase
@@ -16,12 +16,43 @@ export const getEpisodes = async (slug, season_number) => {
 
     const serieId = serie[0].id;
 
-    // Obtener la temporada correspondiente
-    // const { data: seasons, error: seasonsError } = await supabase
-    //   .from("SEASON")
-    //   .select("*")
-    //   .eq("series_id", serieId)
-    //   .eq("season_number", season_number);
+    //OBTENEMOS LAS CATEGORIAS
+
+    const { data: categoriesData, error: categoriesError } = await supabase
+      .from("SERIES_CATEGORIES")
+      .select("categories_id")
+      .eq("series_id", serieId);
+
+    if (categoriesError) {
+      console.error("Error fetching categories:", categoriesError.message);
+      return;
+    }
+
+    // Ahora `categoriesData` es un array de objetos, necesitas extraer los `categories_id`
+    const categoryIds = categoriesData.map((item) => item.categories_id);
+
+    // Luego puedes usarlo en la consulta a la tabla `CATEGORIES`
+    const { data: seriesCategories, error: seriesCategoriesError } =
+      await supabase.from("CATEGORIES").select("*").in("id", categoryIds);
+
+    if (seriesCategoriesError) {
+      console.error(
+        "Error fetching series categories:",
+        seriesCategoriesError.message
+      );
+      return;
+    }
+
+    console.log(seriesCategories);
+
+    if (seriesCategoriesError)
+      throw new Error(
+        `Error al obtener las categorias: ${seriesCategoriesError.message}`
+      );
+    if (!seriesCategories || seriesCategories.length === 0)
+      console.warn("No se encontró las categorias.");
+
+    // END;
 
     const { data: seasons, error: seasonsError } = await supabase
       .from("SEASON")
@@ -30,9 +61,7 @@ export const getEpisodes = async (slug, season_number) => {
       .order("season_number", { ascending: true });
 
     if (seasonsError)
-      throw new Error(
-        `Error al obtener todas las temporadas: ${seasonsError.message}`
-      );
+      throw new Error(`Error al obtener todas las temporadas: ${seasonsError}`);
 
     // Si no hay temporadas, devolvemos solo la serie
     if (!seasons || seasons.length === 0) {
@@ -42,6 +71,7 @@ export const getEpisodes = async (slug, season_number) => {
         season: null,
         episodes: [],
         seasons: [],
+        categories: [],
       };
     }
     //Por defecto 1ra temporada
@@ -65,13 +95,15 @@ export const getEpisodes = async (slug, season_number) => {
       season: seasons[season_number - 1],
       episodes: episodes || [],
       seasons: seasons,
+      categories: seriesCategories || [],
     };
   } catch (error) {
-    console.error("Error fetching episodes:", error.message);
+    console.error("Error fetching episodes:", error);
     return {
       serie: null,
       season: null,
       episodes: [],
+      categories: [],
       error: error.message, // Devuelve el mensaje de error para manejarlo mejor
     };
   }
@@ -119,6 +151,7 @@ export const getTemporadasBySerie = async (serieId) => {
   }
 };
 
+//OBTENER TODAS LAS SERIES PARA EL CATALOGO
 export const getSeries = async () => {
   try {
     const { data: seriesData, error } = await supabase

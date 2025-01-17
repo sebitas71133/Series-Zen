@@ -1,21 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import React from "react";
 import {
-  getEpisodes,
   getSeries,
   getTemporadasBySerie,
+  loadSeriesData,
 } from "../../api/supabaseApi";
 
-export const fetchEpisodesBySeason = createAsyncThunk(
+export const fetchLoadSeriesData = createAsyncThunk(
   "seasons/fetchEpisodes",
   async ({ slug, selectedNumberSeason }, { rejectWithValue }) => {
     try {
-      const { episodes, serie, season, seasons } = await getEpisodes(
-        slug,
-        selectedNumberSeason
-      ); // Llamada a la API
+      const { episodes, serie, season, seasons, categories } =
+        await loadSeriesData(slug, selectedNumberSeason); // Llamada a la API
+      console.log(serie);
 
-      return { episodes, serie, seasons, season }; // Devuelve los episodios como resultado
+      return { episodes, serie, seasons, season, categories }; // Devuelve los episodios como resultado
     } catch (error) {
       return rejectWithValue(error.message); // Maneja errores
     }
@@ -59,6 +58,7 @@ const seriesSlice = createSlice({
     selectedEpisode: null,
     loading: false,
     error: null,
+    categories: [],
   },
 
   reducers: {
@@ -85,21 +85,25 @@ const seriesSlice = createSlice({
     setSelectedNumberSeason: (state, action) => {
       state.selectedNumberSeason = action.payload;
     },
+    setCategories: (state, action) => {
+      state.categories = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchEpisodesBySeason.pending, (state) => {
+      .addCase(fetchLoadSeriesData.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchEpisodesBySeason.fulfilled, (state, action) => {
+      .addCase(fetchLoadSeriesData.fulfilled, (state, action) => {
         state.loading = false;
         state.episodes = action.payload.episodes;
         state.selectedSerie = action.payload.serie;
         state.selectedSeason = action.payload.season;
         state.seasons = action.payload.seasons;
+        state.categories = action.payload.categories;
       })
-      .addCase(fetchEpisodesBySeason.rejected, (state, action) => {
+      .addCase(fetchLoadSeriesData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
