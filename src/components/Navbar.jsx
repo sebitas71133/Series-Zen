@@ -99,7 +99,7 @@ const Navbar = () => {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
+              sx={{ display: { xs: "block", md: "none", height: "400px" } }}
             >
               {pages.map((page) => (
                 <MenuItem

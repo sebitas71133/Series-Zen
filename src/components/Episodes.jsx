@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
@@ -16,10 +16,15 @@ import {
 //import VideoPlayer from "./VideoPlayer";
 
 import {
-  fetchLoadSeriesData,
   selectEpisode,
+  selectSeason,
+  selectSerie,
+  setCategories,
+  setEpisodes,
+  setSelectedNumberSeason,
 } from "../store/slices/seriesSlice";
 import VideoPlayerFull from "./VideoPlayerFull";
+import { useFetchSeriesDataQuery } from "../services/seriesApi";
 
 const Episodes = (props) => {
   const {
@@ -35,30 +40,52 @@ const Episodes = (props) => {
   const dispatch = useDispatch();
   const { slug } = props;
 
+  const { data, isLoading, error } = useFetchSeriesDataQuery({
+    slug: slug,
+    season_number: selectedNumberSeason,
+  });
+  console.log(slug);
+  console.log(data);
+  console.log(selectedNumberSeason);
+  console.log(selectedSeason);
+
   const handleSeasonChange = (event) => {
     const seasonNumber = event.target.value;
-    //dispatch(setSelectedNumberSeason(seasonNumber));
-    const seasonSelected = seasons.find(
+    const seasonSelected = data.seasons.find(
       (season) => season.season_number === seasonNumber
     );
 
-    console.log(seasonSelected);
-
-    dispatch(
-      fetchLoadSeriesData({
-        slug,
-        selectedNumberSeason: seasonNumber,
-      })
-    );
+    dispatch(selectSeason(seasonSelected));
+    dispatch(setSelectedNumberSeason(seasonNumber));
+    console.log(isLoading);
   };
 
   const handleEpisodeClick = (episode) => {
     dispatch(selectEpisode(episode));
   };
 
-  //UseEffect que se realiza solo 1 vez al iniciar el componente
   useEffect(() => {
-    dispatch(fetchLoadSeriesData({ slug, selectedNumberSeason: 1 }));
+    if (data) {
+      dispatch(setEpisodes(data.episodes));
+      dispatch(selectSerie(data.serie));
+      dispatch(setCategories(data.categories));
+
+      // if (!selectedSeason) {
+      //   console.log(selectedSeason);
+
+      //   dispatch(selectSeason(data.seasons[0]));
+      // } else {
+      //   console.log(selectedSeason);
+      //   dispatch(selectSeason(selectedSeason));
+      // }
+      console.log("data");
+    }
+    console.log(data);
+  }, [data, dispatch, slug]);
+
+  useEffect(() => {
+    dispatch(setSelectedNumberSeason(1)); // Volvemos a colocar 1 por defecto para cargar toda la data
+    dispatch(selectSeason(data?.seasons[0])); //Seleccionar la primera Temporada por defecto
   }, []);
 
   return (
@@ -73,32 +100,40 @@ const Episodes = (props) => {
           textAlign: "center",
         }}
       >
-        <Box>
-          <Typography variant="h2" component="h2">
-            Episodios
-          </Typography>
-          <FormControl sx={{ minWidth: 200, mt: 2 }}>
-            <InputLabel>Temporada</InputLabel>
-            <Select
-              value={selectedSeason?.season_number || ""}
-              label="Temporada"
-              onChange={handleSeasonChange}
-              disabled={loading}
-            >
-              {loading ? (
-                <MenuItem disabled>
-                  <CircularProgress size={24} />
-                </MenuItem>
-              ) : (
-                seasons.map((season) => (
-                  <MenuItem key={season.id} value={season.season_number}>
-                    TEMPORADA {season.season_number}
+        {!isLoading ? (
+          <Box>
+            <Typography variant="h2" component="h2">
+              Episodios
+            </Typography>
+            <FormControl sx={{ minWidth: 200, mt: 2 }}>
+              <InputLabel>Temporada</InputLabel>
+              <Select
+                value={selectedSeason?.season_number || "1"}
+                label="Temporada"
+                onChange={handleSeasonChange}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <MenuItem disabled>
+                    <CircularProgress size={24} />
                   </MenuItem>
-                ))
-              )}
-            </Select>
-          </FormControl>
-        </Box>
+                ) : error ? (
+                  <MenuItem disabled>Error: {error?.message}</MenuItem>
+                ) : (
+                  data?.seasons?.map((season) => (
+                    <MenuItem key={season.id} value={season.season_number}>
+                      TEMPORADA {season.season_number}
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            </FormControl>
+          </Box>
+        ) : (
+          <MenuItem disabled>
+            <CircularProgress size={24} />
+          </MenuItem>
+        )}
         <Box sx={{ textAlign: "center", m: 4, p: { md: 2, xs: 0 } }}>
           <Typography variant="h6" component="h6" color="text.primary">
             {selectedSeason?.description}
@@ -120,7 +155,7 @@ const Episodes = (props) => {
       <br />
       <br />
       <Grid2 container spacing={2}>
-        {loading ? (
+        {isLoading ? (
           <Box
             sx={{
               display: "flex",
@@ -133,7 +168,7 @@ const Episodes = (props) => {
             <CircularProgress size={50} />
           </Box>
         ) : (
-          episodes.map((episode) => (
+          episodes?.map((episode) => (
             <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={episode.id}>
               <Card
                 sx={{

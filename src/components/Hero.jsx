@@ -3,18 +3,9 @@ import { Box, Typography, Button, Chip, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
 const Hero = () => {
-  const dispatch = useDispatch();
   const { selectedSerie, seasons, categories } = useSelector(
     (state) => state.series
   );
-
-  console.log(categories);
-
-  // useEffect(() => {
-  //   console.log("serie seleccionado");
-
-  //   console.log(selectedSerie);
-  // }, [selectedSerie]);
 
   return (
     <Box

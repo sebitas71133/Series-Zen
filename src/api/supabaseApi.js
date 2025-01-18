@@ -1,4 +1,4 @@
-import { supabase } from "../../services/supabaseClient";
+import { supabase } from "../../config/supabaseClient";
 
 // Funciones para interactuar con la API
 export const loadSeriesData = async (slug, season_number) => {
@@ -42,8 +42,6 @@ export const loadSeriesData = async (slug, season_number) => {
       );
       return;
     }
-
-    console.log(seriesCategories);
 
     if (seriesCategoriesError)
       throw new Error(

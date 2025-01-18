@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllSeries } from "../store/slices/seriesSlice";
+import { useFetchAllSeriesDataQuery } from "../services/seriesApi";
+// import { fetchAllSeries } from "../store/slices/seriesSlice";
 
 // const seriesData = {
 //   accion: [
@@ -125,16 +126,23 @@ const SeriesSection = ({ title, series = [], onSeriesClick }) => {
 const CatalogPage = () => {
   const navigate = useNavigate();
 
+  const {
+    data: series,
+    isLoading,
+    error,
+  } = useFetchAllSeriesDataQuery({ all: true });
+
   const handleSeriesClick = (path) => {
     navigate(`/series/${path}`);
   };
 
   const dispatch = useDispatch();
-  const { series, loading } = useSelector((state) => state.series);
+  // const { series, loading } = useSelector((state) => state.series);
 
-  useEffect(() => {
-    dispatch(fetchAllSeries({ all: true }));
-  }, [dispatch]);
+  // useEffect(() => {
+
+  //   dispatch(fetchAllSeries({ all: true }));
+  // }, [dispatch]);
 
   return (
     <Box
@@ -145,7 +153,7 @@ const CatalogPage = () => {
         px: 4,
       }}
     >
-      {loading ? (
+      {isLoading ? (
         <Box
           sx={{
             display: "flex",
