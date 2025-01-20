@@ -136,14 +136,6 @@ const CatalogPage = () => {
     navigate(`/series/${path}`);
   };
 
-  const dispatch = useDispatch();
-  // const { series, loading } = useSelector((state) => state.series);
-
-  // useEffect(() => {
-
-  //   dispatch(fetchAllSeries({ all: true }));
-  // }, [dispatch]);
-
   return (
     <Box
       sx={{

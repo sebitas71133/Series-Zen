@@ -24,69 +24,40 @@ import {
   setSelectedNumberSeason,
 } from "../store/slices/seriesSlice";
 import VideoPlayerFull from "./VideoPlayerFull";
-import { useFetchSeriesDataQuery } from "../services/seriesApi";
+import {
+  useFetchAllSerieDataQuery,
+  useFetchAllSeriesDataQuery,
+  useFetchSeriesDataQuery,
+} from "../services/seriesApi";
+import {
+  useFilteredEpisodes,
+  useSelectedSeason,
+  useSortedSeasons,
+} from "../hooks/useFilteredEpisodes";
+import Loading from "./Loading";
 
-const Episodes = (props) => {
-  const {
-    episodes,
-    seasons,
-    selectedEpisode,
-    selectedSeason,
-    selectedNumberSeason,
-    selectedSerie,
-    loading,
-  } = useSelector((state) => state.series);
-
-  const dispatch = useDispatch();
-  const { slug } = props;
-
-  const { data, isLoading, error } = useFetchSeriesDataQuery({
-    slug: slug,
-    season_number: selectedNumberSeason,
-  });
-  console.log(slug);
-  console.log(data);
-  console.log(selectedNumberSeason);
-  console.log(selectedSeason);
-
+const Episodes = ({
+  slug,
+  selectedSeason,
+  selectedSeasonNumber,
+  setSelectedSeasonNumber,
+  setSelectedSeason,
+  setSelectedEpisode,
+  episodes,
+  seasons,
+  season,
+  isLoading,
+  selectedEpisode,
+  error,
+}) => {
   const handleSeasonChange = (event) => {
     const seasonNumber = event.target.value;
-    const seasonSelected = data.seasons.find(
-      (season) => season.season_number === seasonNumber
-    );
-
-    dispatch(selectSeason(seasonSelected));
-    dispatch(setSelectedNumberSeason(seasonNumber));
-    console.log(isLoading);
+    setSelectedSeasonNumber(seasonNumber);
   };
 
-  const handleEpisodeClick = (episode) => {
-    dispatch(selectEpisode(episode));
+  const handleEpisodeClick = (episodeSelected) => {
+    setSelectedEpisode(episodeSelected);
   };
-
-  useEffect(() => {
-    if (data) {
-      dispatch(setEpisodes(data.episodes));
-      dispatch(selectSerie(data.serie));
-      dispatch(setCategories(data.categories));
-
-      // if (!selectedSeason) {
-      //   console.log(selectedSeason);
-
-      //   dispatch(selectSeason(data.seasons[0]));
-      // } else {
-      //   console.log(selectedSeason);
-      //   dispatch(selectSeason(selectedSeason));
-      // }
-      console.log("data");
-    }
-    console.log(data);
-  }, [data, dispatch, slug]);
-
-  useEffect(() => {
-    dispatch(setSelectedNumberSeason(1)); // Volvemos a colocar 1 por defecto para cargar toda la data
-    dispatch(selectSeason(data?.seasons[0])); //Seleccionar la primera Temporada por defecto
-  }, []);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -108,7 +79,7 @@ const Episodes = (props) => {
             <FormControl sx={{ minWidth: 200, mt: 2 }}>
               <InputLabel>Temporada</InputLabel>
               <Select
-                value={selectedSeason?.season_number || "1"}
+                value={selectedSeasonNumber || "1"}
                 label="Temporada"
                 onChange={handleSeasonChange}
                 disabled={isLoading}
@@ -120,8 +91,11 @@ const Episodes = (props) => {
                 ) : error ? (
                   <MenuItem disabled>Error: {error?.message}</MenuItem>
                 ) : (
-                  data?.seasons?.map((season) => (
-                    <MenuItem key={season.id} value={season.season_number}>
+                  seasons.map((season) => (
+                    <MenuItem
+                      key={season.season_id}
+                      value={season.season_number}
+                    >
                       TEMPORADA {season.season_number}
                     </MenuItem>
                   ))
@@ -136,15 +110,15 @@ const Episodes = (props) => {
         )}
         <Box sx={{ textAlign: "center", m: 4, p: { md: 2, xs: 0 } }}>
           <Typography variant="h6" component="h6" color="text.primary">
-            {selectedSeason?.description}
+            {season?.description}
           </Typography>
         </Box>
         <Box>
-          {selectedSeason?.poster_image && (
+          {season?.poster_image && (
             <CardMedia
               component="img"
-              image={selectedSeason?.poster_image}
-              alt={`Póster de la temporada ${selectedSeason?.season_number}`}
+              image={season?.poster_image}
+              alt={`Póster de la temporada ${season?.season_number}`}
               sx={{ maxWidth: 200, borderRadius: 2 }}
             />
           )}
@@ -156,17 +130,7 @@ const Episodes = (props) => {
       <br />
       <Grid2 container spacing={2}>
         {isLoading ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <CircularProgress size={50} />
-          </Box>
+          <Loading />
         ) : (
           episodes?.map((episode) => (
             <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={episode.id}>
@@ -204,21 +168,15 @@ const Episodes = (props) => {
         )}
       </Grid2>
       {selectedEpisode && (
-        // <VideoPlayer
-        //   open={!!selectedEpisode}
-        //   onClose={handleCloseVideo}
-        //   videoUrl={selectedEpisode.video_url}
-        //   title={`${selectedEpisode.episode_number} - ${selectedEpisode.title}`}
-        // />
-
         <VideoPlayerFull
           open={!!selectedEpisode}
+          setSelectedEpisode={setSelectedEpisode}
           // onClose={handleCloseVideo}
           videoUrl={selectedEpisode.video_url}
           title={`${selectedEpisode.episode_number} - ${selectedEpisode.title}`}
           description={selectedEpisode.description}
           thumbnail_image={selectedEpisode.thumbnail_image}
-          selectedSeasonNumber={selectedSeason.season_number}
+          selectedSeasonNumber={selectedSeasonNumber.season_number}
         ></VideoPlayerFull>
       )}
     </Box>

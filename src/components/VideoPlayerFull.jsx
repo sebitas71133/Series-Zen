@@ -8,8 +8,6 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import Slide from "@mui/material/Slide";
 import { Box } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { selectEpisode } from "../store/slices/seriesSlice";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -21,11 +19,10 @@ const VideoPlayerFull = ({
   title,
   description,
   selectedSeasonNumber,
+  setSelectedEpisode,
 }) => {
-  const dispatch = useDispatch();
-
   const handleClose = () => {
-    dispatch(selectEpisode(null));
+    setSelectedEpisode(null);
   };
 
   return (
