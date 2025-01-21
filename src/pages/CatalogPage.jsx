@@ -8,7 +8,7 @@ import {
   CardContent,
   CircularProgress,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetchAllSeriesDataQuery } from "../services/seriesApi";
 // import { fetchAllSeries } from "../store/slices/seriesSlice";
@@ -133,7 +133,9 @@ const CatalogPage = () => {
   } = useFetchAllSeriesDataQuery({ all: true });
 
   const handleSeriesClick = (path) => {
-    navigate(`/series/${path}`);
+    console.log(path);
+
+    navigate(path, { replace: true });
   };
 
   return (

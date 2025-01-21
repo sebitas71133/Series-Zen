@@ -13,12 +13,15 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/slices/authSlice";
+import { supabase } from "../../config/supabaseClient";
 
 const pages = [
-  { label: "Peliculas", path: "/peliculas" },
-  { label: "Series", path: "/series" },
-  { label: "Catalogo", path: "/catalogo" },
-  { label: "Niños y Familia", path: "/niñosfamilia" },
+  { label: "Peliculas", path: "peliculas" },
+  { label: "Series", path: "series" },
+  { label: "Catalogo", path: "catalogo" },
+  { label: "Niños y Familia", path: "niñosfamilia" },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -26,6 +29,7 @@ const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -39,8 +43,21 @@ const Navbar = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event) => {
     setAnchorElUser(null);
+  };
+
+  const handleCloseUserMenuOption = async (event) => {
+    setAnchorElUser(null);
+    if (event.target.textContent === "Logout") {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error al cerrar sesión:", error.message);
+      } else {
+        // dispatch(logout());
+        navigate("/", { replace: true });
+      }
+    }
   };
 
   const handleNavigate = (path) => {
@@ -69,7 +86,7 @@ const Navbar = () => {
               textDecoration: "none",
               cursor: "pointer",
             }}
-            onClick={() => handleNavigate("/home")}
+            onClick={() => handleNavigate("series")}
           >
             LOGO
           </Typography>
@@ -130,7 +147,7 @@ const Navbar = () => {
               textDecoration: "none",
               cursor: "pointer",
             }}
-            onClick={() => handleNavigate("/series")}
+            onClick={() => handleNavigate("series")}
           >
             LOGO
           </Typography>
@@ -168,7 +185,11 @@ const Navbar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting}
+                  value={setting}
+                  onClick={handleCloseUserMenuOption}
+                >
                   <Typography sx={{ textAlign: "center" }}>
                     {setting}
                   </Typography>
