@@ -63,7 +63,7 @@ const Navbar = () => {
 
   const handleNavigate = (path) => {
     //  console.log(path);
-    console.log(user);
+
     navigate(path);
   };
 

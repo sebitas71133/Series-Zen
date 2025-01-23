@@ -15,8 +15,6 @@ const PublicLayout = () => {
     );
   }
 
-  console.log(session);
-
   if (session) {
     return <Navigate to="/app/series" replace />;
   }
