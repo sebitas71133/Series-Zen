@@ -61,6 +61,7 @@ const Episodes = ({
 
   return (
     <Box sx={{ p: 4 }}>
+      {/* TEMPORADAS */}
       <Box
         sx={{
           display: "flex",
@@ -109,7 +110,12 @@ const Episodes = ({
           </MenuItem>
         )}
         <Box sx={{ textAlign: "center", m: 4, p: { md: 2, xs: 0 } }}>
-          <Typography variant="h6" component="h6" color="text.primary">
+          <Typography
+            sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
+            variant="h6"
+            component="h6"
+            color="text.primary"
+          >
             {season?.description}
           </Typography>
         </Box>
@@ -119,7 +125,7 @@ const Episodes = ({
               component="img"
               image={season?.poster_image}
               alt={`Póster de la temporada ${season?.season_number}`}
-              sx={{ maxWidth: 200, borderRadius: 2 }}
+              sx={{ maxWidth: 300, borderRadius: 2 }}
             />
           )}
         </Box>
@@ -128,12 +134,14 @@ const Episodes = ({
       <hr />
       <br />
       <br />
+
+      {/* EPISODIOS */}
       <Grid2 container spacing={2}>
         {isLoading ? (
           <Loading />
         ) : (
           episodes?.map((episode) => (
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={episode.id}>
+            <Grid2 size={{ xs: 6, sm: 4, md: 3 }} key={episode.id}>
               <Card
                 sx={{
                   bgcolor: "background.paper",
@@ -142,23 +150,38 @@ const Episodes = ({
                     transform: "scale(1.05)",
                     transition: "transform 0.3s ease-in-out",
                   },
+                  height: { xs: "250px", sm: "300px", md: "400px" },
                 }}
                 onClick={() => handleEpisodeClick(episode)}
               >
                 <CardMedia
                   component="img"
-                  height="160"
+                  height="auto"
                   image={episode.thumbnail_image}
                   alt={episode.title}
                 />
                 <CardContent>
-                  <Typography variant="subtitle1" component="div" gutterBottom>
+                  <Typography
+                    sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
+                    variant="subtitle1"
+                    component="div"
+                    gutterBottom
+                  >
                     {episode.episode_number}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
+                    variant="body2"
+                    color="text.secondary"
+                  >
                     {episode.title}
                   </Typography>
-                  <Typography variant="body2" color="text.primary" mt={2}>
+                  <Typography
+                    sx={{ fontSize: { xs: "0.7rem", md: "1rem" } }}
+                    variant="body2"
+                    color="text.primary"
+                    mt={2}
+                  >
                     {episode.description}
                   </Typography>
                 </CardContent>

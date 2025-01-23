@@ -2,12 +2,18 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import useSession from "../hooks/useSession";
+import Loading from "../components/Loading";
+import { useSelector } from "react-redux";
 
 const ProtectedLayout = () => {
-  const { session, loading } = useSession();
+  const { session, loading } = useSelector((state) => state.session);
   if (loading) {
     //MUY IMPORTANTE PORQUE SI AUN NO ESTA LISTO SE REDIGIRA INDEFINIDAMENTE
-    return <div>Cargando...</div>;
+    return (
+      <>
+        <Loading />
+      </>
+    );
   }
 
   if (!session) {

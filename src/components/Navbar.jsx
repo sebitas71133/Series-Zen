@@ -13,8 +13,8 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logout } from "../store/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/slices/sessionSlice";
 import { supabase } from "../../config/supabaseClient";
 
 const pages = [
@@ -31,6 +31,7 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.session);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -54,15 +55,15 @@ const Navbar = () => {
       if (error) {
         console.error("Error al cerrar sesión:", error.message);
       } else {
-        // dispatch(logout());
+        dispatch(logout());
         navigate("/", { replace: true });
       }
     }
   };
 
   const handleNavigate = (path) => {
-    console.log(path);
-
+    //  console.log(path);
+    console.log(user);
     navigate(path);
   };
 
@@ -137,9 +138,9 @@ const Navbar = () => {
             component="a"
             // href="#app-bar-with-responsive-menu"
             sx={{
-              mr: 2,
+              mr: 4,
               display: { xs: "flex", md: "none" },
-              flexGrow: 1,
+              flexGrow: 0,
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
@@ -151,21 +152,71 @@ const Navbar = () => {
           >
             LOGO
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page.label}
                 onClick={() => handleNavigate(page.path)}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  textDecoration: "none",
+                }}
               >
-                {page.label}
+                <Typography
+                  variant="body"
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif", // Consistencia en la tipografía
+                    fontWeight: 600, // Mantener el peso
+                    color: "white", // Color hereda del botón
+                    ml: 2,
+                  }}
+                >
+                  {page.label}
+                </Typography>
               </Button>
             ))}
           </Box>
+
+          {/* Nombre de usuario */}
+
+          <Typography
+            variant="h6"
+            noWrap
+            component="h5"
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "flex" },
+              flexGrow: 0,
+              fontFamily: "'Poppins', sans-serif", // Tipografía moderna
+              fontWeight: 600, // Peso de la fuente para que sea más visible
+              fontSize: { xs: "1rem", md: "1.25rem" }, // Tamaño adaptable según pantalla
+              letterSpacing: ".05rem", // Espaciado ligero para mayor legibilidad
+              color: "white", // Color verde para un toque fresco
+              textDecoration: "none",
+              backgroundColor: "rgba(0, 0, 0, 0.1)", // Fondo sutil
+              padding: "8px 16px", // Padding para que se vea más espacioso
+              borderRadius: "8px", // Bordes redondeados para un look moderno
+              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Sombra sutil para mayor profundidad
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.15)", // Cambia el fondo al pasar el mouse
+                cursor: "pointer", // Cursor tipo mano para interactividad
+              },
+            }}
+          >
+            {user.identities[0].identity_data.name}
+          </Typography>
+
+          {/* Icono Usuario Logueado */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={user.identities[0].identity_data.avatar_url}
+                />
               </IconButton>
             </Tooltip>
             <Menu
