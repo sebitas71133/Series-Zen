@@ -15,17 +15,19 @@ const LoginPage = () => {
           height: "100vh",
         }}
       >
-        <Box sx={{ mb: 5 }}>
-          <Typography variant="body" color="text.primary">
-            PAGINA DE LOGIN
-          </Typography>
+        <Box flexGrow={0}>
+          <Box sx={{ mb: 5 }}>
+            <Typography variant="body" color="text.primary">
+              PAGINA DE LOGIN
+            </Typography>
+          </Box>
+          <Auth />
+          <Link to="/">
+            <Button variant="contained" color="primary">
+              Regresar
+            </Button>
+          </Link>
         </Box>
-        <Auth />
-        <Link to="/">
-          <Button variant="contained" color="primary">
-            Regresar
-          </Button>
-        </Link>
       </Box>
     </>
   );

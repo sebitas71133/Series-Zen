@@ -1,7 +1,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import useSession from "../hooks/useSession";
 import Loading from "../components/Loading";
 import { useSelector } from "react-redux";
 

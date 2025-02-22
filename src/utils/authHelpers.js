@@ -4,12 +4,14 @@
 //Se pide que el usuario se loguee otra vez
 
 import { supabase } from "../../config/supabaseClient";
+import { isTokenExpired } from "./isTokenExpired";
 
 export const fetchSession = async () => {
   const { data } = await supabase.auth.getSession();
 
   if (data) {
-    const isExpired = Date.now() > data?.session?.expires_at * 1000;
+    const isExpired = isTokenExpired(data?.session?.expires_at);
+
     if (!isExpired) {
       return data.session;
     } else {

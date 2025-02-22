@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../../config/supabaseClient";
+import { useLogout } from "../../hooks/useLogout";
+import { useSelector } from "react-redux";
 
-export default function Account({ session }) {
+export default function Account() {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
   const [website, setWebsite] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
+  const handleLogout = useLogout();
+  const { session } = useSelector((state) => state.session);
 
   useEffect(() => {
     let ignore = false;
@@ -14,7 +18,7 @@ export default function Account({ session }) {
       const { user } = session;
 
       const { data, error } = await supabase
-        .from("profiles")
+        .from("USER_PROFILES")
         .select(`username, website, avatar_url`)
         .eq("id", user.id)
         .single();
@@ -53,7 +57,7 @@ export default function Account({ session }) {
       updated_at: new Date(),
     };
 
-    const { error } = await supabase.from("profiles").upsert(updates);
+    const { error } = await supabase.from("USER_PROFILES").upsert(updates);
 
     if (error) {
       alert(error.message);
@@ -100,11 +104,7 @@ export default function Account({ session }) {
       </div>
 
       <div>
-        <button
-          className="button block"
-          type="button"
-          onClick={() => supabase.auth.signOut()}
-        >
+        <button className="button block" type="button" onClick={handleLogout}>
           Sign Out
         </button>
       </div>

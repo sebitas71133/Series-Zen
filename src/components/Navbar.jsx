@@ -16,14 +16,22 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/sessionSlice";
 import { supabase } from "../../config/supabaseClient";
+import { useLogout } from "../hooks/useLogout";
+import { CardMedia } from "@mui/material";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 const pages = [
-  { label: "Peliculas", path: "peliculas" },
   { label: "Series", path: "series" },
-  { label: "Catalogo", path: "catalogo" },
-  { label: "Niños y Familia", path: "niñosfamilia" },
+  // { label: "Peliculas", path: "peliculas" },
+  // { label: "Catalogo", path: "catalogo" },
+  // { label: "Niños y Familia", path: "niñosfamilia" },
 ];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = [
+  { id: "profile", label: "Profile" },
+  { id: "account", label: "Account" },
+  { id: "dashboard", label: "Dashboard" },
+  { id: "logout", label: "Logout" },
+];
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -31,7 +39,8 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.session);
+  const handleLogout = useLogout();
+  const { email, loading, user } = useSelector((state) => state.session);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -48,16 +57,15 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
-  const handleCloseUserMenuOption = async (event) => {
+  const handleCloseUserMenuOption = async (id) => {
     setAnchorElUser(null);
-    if (event.target.textContent === "Logout") {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error al cerrar sesión:", error.message);
-      } else {
-        dispatch(logout());
-        navigate("/", { replace: true });
-      }
+
+    if (id === "logout") {
+      handleLogout();
+    }
+
+    if (id === "profile") {
+      navigate("/app/profile");
     }
   };
 
@@ -68,30 +76,10 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            // href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-            onClick={() => handleNavigate("series")}
-          >
-            LOGO
-          </Typography>
-
+          {/* OPCIONES NAVBAR OCULTO */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -131,7 +119,50 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Box sx={{ display: "flex", gap: 2, mb: { xs: 2, sm: 0 } }}>
+            <CardMedia
+              component="img"
+              image={"/me.jpg"}
+              alt={"zen"}
+              sx={{
+                maxWidth: 35,
+                borderRadius: 2,
+                display: { xs: "none", sm: "block" },
+              }}
+            />
+            <Button
+              sx={{ p: 0 }}
+              onClick={() =>
+                window.open("https://github.com/sebitas71133", "_blank")
+              }
+            >
+              <GitHubIcon
+                fontSize="large"
+                sx={{ color: "white", display: { xs: "none", sm: "block" } }}
+              />
+            </Button>
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            // href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+            onClick={() => handleNavigate("series")}
+          >
+            ZEBAS
+          </Typography>
+
+          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
           <Typography
             variant="h5"
             noWrap
@@ -150,9 +181,10 @@ const Navbar = () => {
             }}
             onClick={() => handleNavigate("series")}
           >
-            LOGO
+            ZEBAS
           </Typography>
 
+          {/* OPCIONES NAVBAR */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
@@ -166,10 +198,10 @@ const Navbar = () => {
                 }}
               >
                 <Typography
-                  variant="body"
+                  variant="h6"
                   sx={{
                     fontFamily: "'Poppins', sans-serif", // Consistencia en la tipografía
-                    fontWeight: 600, // Mantener el peso
+                    //fontWeight: 600, // Mantener el peso
                     color: "white", // Color hereda del botón
                     ml: 2,
                   }}
@@ -206,7 +238,7 @@ const Navbar = () => {
               },
             }}
           >
-            {user.identities[0].identity_data.name}
+            {email}
           </Typography>
 
           {/* Icono Usuario Logueado */}
@@ -237,12 +269,12 @@ const Navbar = () => {
             >
               {settings.map((setting) => (
                 <MenuItem
-                  key={setting}
-                  value={setting}
-                  onClick={handleCloseUserMenuOption}
+                  key={setting.id}
+                  value={setting.id}
+                  onClick={(event) => handleCloseUserMenuOption(setting.id)}
                 >
                   <Typography sx={{ textAlign: "center" }}>
-                    {setting}
+                    {setting.label}
                   </Typography>
                 </MenuItem>
               ))}

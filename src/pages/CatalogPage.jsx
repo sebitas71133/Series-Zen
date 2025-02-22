@@ -72,7 +72,7 @@ import { useFetchAllSeriesDataQuery } from "../services/seriesApi";
 
 const SeriesSection = ({ title, series = [], onSeriesClick }) => {
   return (
-    <Box sx={{ mb: 6 }}>
+    <Box sx={{ mb: 6, mt: 5 }}>
       <Typography
         variant="h2"
         sx={{

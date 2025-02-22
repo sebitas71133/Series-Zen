@@ -1,7 +1,6 @@
 //Main routes
 
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { createBrowserRouter } from "react-router-dom";
 import SeriesPage from "../pages/SeriesPage";
 import CatalogPage from "../pages/CatalogPage";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -9,8 +8,10 @@ import NotFoundPage from "../components/NotFoundPage";
 import HomePage from "../pages/HomePage";
 import PublicLayout from "../layouts/PublicLayout";
 import ProtectedLayout from "../layouts/ProtectedLayout";
-import RegisterPage from "../components/auth/RegisterPage";
+
 import LoginPage from "../components/auth/LoginPage";
+import Account from "../components/auth/Account";
+import LoginDemoPage from "../components/auth/LoginDemoPage";
 
 const routes = [
   //RUTAS PUBLICAS
@@ -20,7 +21,7 @@ const routes = [
     children: [
       { index: true, element: <HomePage></HomePage> },
       { path: "login", element: <LoginPage /> },
-      { path: "register", element: <RegisterPage /> },
+      { path: "loginDemo", element: <LoginDemoPage /> },
     ],
     errorBoundary: <ErrorBoundary />,
   },
@@ -31,6 +32,7 @@ const routes = [
     children: [
       { path: "series", element: <CatalogPage></CatalogPage> },
       { path: "series/:slug", element: <SeriesPage></SeriesPage> },
+      { path: "profile", element: <Account></Account> },
     ],
   },
   {
