@@ -1,7 +1,8 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../store/slices/sessionSlice";
+
 import { supabase } from "../../config/supabaseClient";
+import { logout } from "../store/slices/sessionSlice";
 
 export const useLogout = () => {
   const dispatch = useDispatch();

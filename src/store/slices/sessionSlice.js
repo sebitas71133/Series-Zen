@@ -40,6 +40,7 @@ const sessionSlice = createSlice({
       state.isAuthenticated = false;
       state.authToken = null;
       state.user = null;
+      state.email = null;
     },
   },
 });
