@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+
 import {
   Box,
   Typography,
@@ -13,35 +13,14 @@ import {
   InputLabel,
   CircularProgress,
 } from "@mui/material";
-//import VideoPlayer from "./VideoPlayer";
 
-import {
-  selectEpisode,
-  selectSeason,
-  selectSerie,
-  setCategories,
-  setEpisodes,
-  setSelectedNumberSeason,
-} from "../store/slices/seriesSlice";
 import VideoPlayerFull from "./VideoPlayerFull";
-import {
-  useFetchAllSerieDataQuery,
-  useFetchAllSeriesDataQuery,
-  useFetchSeriesDataQuery,
-} from "../services/seriesApi";
-import {
-  useFilteredEpisodes,
-  useSelectedSeason,
-  useSortedSeasons,
-} from "../hooks/useFilteredEpisodes";
+
 import Loading from "./Loading";
 
 const Episodes = ({
-  slug,
-  selectedSeason,
   selectedSeasonNumber,
   setSelectedSeasonNumber,
-  setSelectedSeason,
   setSelectedEpisode,
   episodes,
   seasons,
@@ -58,6 +37,8 @@ const Episodes = ({
   const handleEpisodeClick = (episodeSelected) => {
     setSelectedEpisode(episodeSelected);
   };
+
+  //console.log(selectedEpisode);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -194,12 +175,14 @@ const Episodes = ({
         <VideoPlayerFull
           open={!!selectedEpisode}
           setSelectedEpisode={setSelectedEpisode}
-          // onClose={handleCloseVideo}
           videoUrl={selectedEpisode.video_url}
           title={`${selectedEpisode.episode_number} - ${selectedEpisode.title}`}
           description={selectedEpisode.description}
           thumbnail_image={selectedEpisode.thumbnail_image}
-          selectedSeasonNumber={selectedSeasonNumber.season_number}
+          selectedSeasonNumber={selectedSeasonNumber}
+          duration={selectedEpisode.duration}
+          releaseDate={selectedEpisode.release_date}
+          episodeNumber={selectedEpisode.episode_number}
         ></VideoPlayerFull>
       )}
     </Box>
