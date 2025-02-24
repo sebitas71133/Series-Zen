@@ -47,9 +47,8 @@ npm run dev
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/1376a0a3-2fba-4bb2-9d5f-7f71967846c9" width="45%" />
-  <img src="https://github.com/user-attachments/assets/dfc28a0e-e43b-4f6e-9e09-7c3b98001cde" width="45%" />
+  <img src="https://github.com/user-attachments/assets/194c005e-f1f6-40ce-be39-8055461b2744" width="45%" />
 </div>
-
 
 ## 🌍 Demo en producción
 
