@@ -11,14 +11,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogout } from "../hooks/useLogout";
 import { CardMedia } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 const pages = [
-  { label: "Series", path: "series" },
+  { label: "SERIES", path: "series" },
   // { label: "Peliculas", path: "peliculas" },
   // { label: "Catalogo", path: "catalogo" },
   // { label: "Niños y Familia", path: "niñosfamilia" },
@@ -67,9 +67,8 @@ const Navbar = () => {
   };
 
   const handleNavigate = (path) => {
-    //  console.log(path);
-
     navigate(path);
+    setAnchorElNav(null);
   };
 
   return (
@@ -109,7 +108,21 @@ const Navbar = () => {
                   key={page.label}
                   onClick={() => handleNavigate(page.path)}
                 >
-                  <Typography sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700, // Mantener el peso
+                      fontFamily: "monospace",
+                      letterSpacing: ".3rem",
+                      color: "text.primary", // Color hereda del botón
+                      ml: 2,
+                      textDecoration: "none",
+                      "&:hover": {
+                        backgroundColor: "#4A90E2",
+                        color: "#FFFFFF",
+                      },
+                    }}
+                  >
                     {page.label}
                   </Typography>
                 </MenuItem>
@@ -184,28 +197,26 @@ const Navbar = () => {
           {/* OPCIONES NAVBAR */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button
+              <Typography
                 key={page.label}
-                onClick={() => handleNavigate(page.path)}
+                variant="h6"
                 sx={{
-                  my: 2,
-                  color: "white",
-                  display: "block",
+                  fontWeight: 700, // Mantener el peso
+                  fontFamily: "monospace",
+                  letterSpacing: ".3rem",
+                  color: "text.primary", // Color hereda del botón
+                  ml: 4,
                   textDecoration: "none",
+                  "&:hover": {
+                    backgroundColor: "#4A90E2",
+                    color: "#FFFFFF",
+                  },
                 }}
+                component={Link}
+                to={page.path}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontFamily: "'Poppins', sans-serif", // Consistencia en la tipografía
-                    //fontWeight: 600, // Mantener el peso
-                    color: "white", // Color hereda del botón
-                    ml: 2,
-                  }}
-                >
-                  {page.label}
-                </Typography>
-              </Button>
+                {page.label}
+              </Typography>
             ))}
           </Box>
 

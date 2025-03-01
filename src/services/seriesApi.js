@@ -44,7 +44,7 @@ export const seriesApi = createApi({
     // createEpisode: builder.mutation({
     //   async queryFn(newEpisode) {
     //     try {
-    //       const { data, error } = await supabase
+    //       const { data, error } = await supabasegi
     //         .from("EPISODES")
     //         .insert(newEpisode);
     //       if (error) throw new Error(error.message);
